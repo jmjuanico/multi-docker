@@ -1,0 +1,16 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t jmjuanico/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run jmjuanico/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t jmjuanico/multi-client ./client
+  - docker build -t jmjuanico/multi-nginx ./nginx
+  - docker build -t jmjuanico/multi-server ./server
+  - docker build -t jmjuanico/multi-worker ./worker
+  # take images and push to dockerhub
